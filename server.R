@@ -1,53 +1,62 @@
 library(shiny)
-library(car)    # Import library to use recode() function
+library(car)
 
 shinyServer(function(input, output) {
   
   values <- reactiveValues()
   
-  # Calculate the interest and amount    
   observe({
-    input$action_Calc
+    input$Calculate
     values$bmi <- isolate({
-      input$num_weight/( input$num_height * input$num_height)
-
+      input$num_weight/(input$num_height * input$num_height * 0.0001)
+      
     })
-    
-    if values$bmi <= 15.99  values$status <- "Severe thinness"
-    if values$bmi >= 16 && values$bmi <= 16.99  values$status <- "Severe thinness"
-    if values$bmi >= 16 && values$bmi <= 16.99  values$status <- "Moderate thinness"
-    if values$bmi >= 17 && values$bmi <= 18.49  values$status <- "Mild thinness"
-    if values$bmi >= 18.50 && values$bmi <= 24.99  values$status <- "Normal weight"
-    if values$bmi >= 25 && values$bmi <= 29.99  values$status <- "Overweight"
-    if values$bmi >= 30 && values$bmi <= 34.99  values$status <- "Obese - class I"
-    if values$bmi >= 35 && values$bmi <= 39.99  values$status <- "Obese - class II"
-    if values$bmi >= 40 values$status <- "Obese - class III"
   })
   
+#   if values$bmi < 18.5 
+#   {
+#     values$status="Underweight"
+#   }
+#   else if values$bmi < 24.9
+#   {
+#     values$status="Normal weight"
+#   }
+#   else if values$bmi < 29.9
+#   {
+#     values$status="Overweight"
+#   }
+#   else
+#   {
+#     values$status="Obesity"
+#   }  
+
   # Display values entered
   output$text_height <- renderText({
-    input$action_Calc
-    paste("Height in CM :", isolate(input$num_height))
+    input$Calculate
+    paste("Height [CM] :", isolate(input$num_height))
   })
   
   output$text_weight <- renderText({
-    input$action_Calc
-    paste("Weight in KG : ", isolate(input$num_weight))
+    input$Calculate
+    paste("Weight [KG} : ", isolate(input$num_weight))
   })
   
+  
+    
   # Display calculated values
   
   output$text_BMI <- renderText({
-    if(input$action_Calc == 0) ""
+    if(input$Calculate == 0) ""
     else
-      paste("Your BMI IS:", values$bmi)
+      
+      paste("BMI is (Metric):", values$bmi)
   })
   
-  output$text_status <- renderText({
-    if(input$action_Calc == 0) ""
-    else 
-      paste("Your BMI value according to WHO:", values$status)
-  })
-  
+#   output$text_status <- renderText({
+#     if(input$Calculate == 0) ""
+#     else
+#       
+#       paste("BMI shows you are ", values$status)
+#   })
   
 })
